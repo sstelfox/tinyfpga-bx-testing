@@ -21,7 +21,7 @@ module hardware (
     input clk_16mhz,
 
     // onboard USB interface
-    output pin_pu,
+    output pin_usb_pu,
     output pin_usbp,
     output pin_usbn,
 
@@ -40,7 +40,7 @@ module hardware (
     inout  flash_io2,
     inout  flash_io3
 );
-    assign pin_pu = 1'b1;
+    assign pin_usb_pu = 1'b1;
     assign pin_usbp = 1'b0;
     assign pin_usbn = 1'b0;
 
