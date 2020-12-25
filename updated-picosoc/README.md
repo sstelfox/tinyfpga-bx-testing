@@ -1,4 +1,4 @@
-# Update PicoSOC Example
+# Updated PicoSOC Example
 
 Most of this was sourced from the [TinyFPGA-BX][1] project. That project was
 cleaned up a little bit and updated to use nextpnr and the riscv tooling that
@@ -24,6 +24,15 @@ the following command:
 ```
 make upload
 ```
+
+While the compilation and upload have no issues, I believe this example isn't
+working and I'm not sure where the error it is. Based on the contents of
+firmware this seems like it should be making the LED blink, but in practice its
+staying steady off.
+
+I need to go through all the pieces to see if there are incorrect addresses
+somewhere, or perhaps the clock became too fast for the blinking with the
+updated software...
 
 [1]: https://github.com/tinyfpga/TinyFPGA-BX.git
 [2]: https://pypi.org/project/tinyprog/
