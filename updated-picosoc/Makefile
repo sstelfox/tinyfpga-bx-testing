@@ -26,4 +26,5 @@ clean:
 upload: hardware.bin firmware.bin
 	tinyprog -p hardware.bin -u firmware.bin
 
+.DEFAULT_GOAL := build
 .PHONY: build clean upload
