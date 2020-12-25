@@ -1,0 +1,9 @@
+/firmware.bin
+/firmware.elf
+/firmware.map
+/hardware.asc
+/hardware.bin
+/hardware.blif
+/hardware.json
+/hardware.log
+/hardware.rpt
