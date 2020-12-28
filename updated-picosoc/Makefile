@@ -1,6 +1,5 @@
 hardware.asc: hardware.pcf hardware.blif
-	nextpnr-ice40 --lp8k --package cm81 --asc hardware.asc --pcf hardware.pcf \
-		--json hardware.json
+	nextpnr-ice40 --lp8k --package cm81 --asc hardware.asc --pcf hardware.pcf --json hardware.json
 
 hardware.bin: hardware.asc
 	icetime -d lp8k -c 16 -mtr hardware.rpt hardware.asc
@@ -8,7 +7,7 @@ hardware.bin: hardware.asc
 
 # Use a grouped target to generate both of these files
 hardware.blif hardware.json &: hardware.v spimemio.v simpleuart.v picosoc.v picorv32.v
-	yosys -ql hardware.log -p 'synth_ice40 -top hardware -blif hardware.blif -json hardware.json' $^
+	yosys -Q -q -l hardware.log -p 'synth_ice40 -top hardware -blif hardware.blif -json hardware.json' $^
 
 firmware.bin: firmware.elf
 	riscv64-linux-gnu-objcopy -O binary firmware.elf firmware.bin

@@ -170,18 +170,49 @@ tinyprog --update-bootloader
 ### Project Initialization
 
 ```
-mkdir -p ~/workspace/electronics/fpga-playground/{rtl,src}
+mkdir -p ~/workspace/electronics/fpga-playground/{cfg,rtl,src}
 cd workspace/electronics/fpga-playground
 
 cat << 'EOF' > Makefile
+# Note: If the FPGA family, or the package changes then the build commands will have to be updated.
+BOARD_PIN_DEFS = cfg/tinyfpga_bx_pins.pcf
+TARGET_MHZ = 16
+
+out/hardware.bin: tmp/hardware.asc
+	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.asc out/hardware.bin
+	icepack tmp/hardware.asc out/hardware.bin
+
+tmp/hardware.asc: cfg/tinyfpga_bx_pins.pcf tmp/hardware.json
+	nextpnr-ice40 --lp8k --package cm81 --pcf $(BOARD_PIN_DEFS) --json tmp/hardware.json --asc tmp/hardware.asc
+
+tmp/hardware.blif tmp/hardware.json &: rtl/hardware.v
+	yosys -Q -q -l tmp/hardware.log -p 'synth_ice40 -top rtl/hardware.v -blif tmp/hardware.blif -json tmp/hardware.json' $^
+
+build: out/hardware.bin
+
+clean:
+	rm -f out/hardware.bin tmp/hardware.{asc,blif,json,log,rpt}
+
+upload: out/hardware.bin
+	tinyprog -p out/hardware.bin
+
+.DEFAULT_GOAL := build
+.PHONY: build clean upload
 EOF
+
+touch rtl/hardware.v
 
 git init
 git add -A
 git commit -m "initial project creation"
 ```
 
-Before we do much design we need to understand what we're building for.
+Before we do much design we need to understand what we're building for, the
+Makefile above is specific to the iCE40LP8K-CM81 ([datasheet][4]). If your
+target differs you'll have to adjust the build commands to match. How the
+package is physically connected on the board is going to define our pin
+mapping. Luckily our board has all the hardware specific information
+[available][5].
 
 ## Project Style Guidelines
 
@@ -210,13 +241,21 @@ keep close at hand. This will very likely evolve over time.
 * Source code belonging to firmware, or additional user data that will live on
   top of the verilog design belong in the `src` directory in the root of the
   project
+* Board pin configuration for specific hardware should live in a `cfg` directory
+  named after the board and version where appropriate.
 * All build artifacts should be ignored from the git directory
 * The project `Makefile` should define `build`, `clean`, and `program` phony
   targets. The `build` target should be the default and build both the verilog
   design and any required firmware, the `clean` target should remove all build
   artifacts, and the `program` target should handle uploading the currently
   built design to the attached hardware.
+* Commonly `top.v` is used for the entrypoint into the project, I prefer
+  `hardware.v` as its more descriptive for what is being built.
+* Logical groups of modules should be kept in subdirectories (for example
+  components of an ALU)
 
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
 [2]: https://tinyfpga.com/
 [3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
+[4]: https://www.mouser.com/datasheet/2/225/FPGA-DS-02029-3-5-iCE40-LP-HX-Family-Data-Sheet-1022803.pdf
+[5]: https://github.com/tinyfpga/TinyFPGA-BX
