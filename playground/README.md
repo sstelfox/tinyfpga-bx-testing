@@ -132,6 +132,12 @@ sudo dnf install icestorm make nextpnr yosys -y
 pip install tinyprog --user
 ```
 
+I'll likely also want the following packages, but I don't want to explicitly
+add them to the install list until I do:
+
+* gtkwave
+* iverilog
+
 At this point you should be able to test that the system can see my board:
 
 ```
