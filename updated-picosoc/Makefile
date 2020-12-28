@@ -3,7 +3,7 @@ hardware.asc: hardware.pcf hardware.blif
 		--json hardware.json
 
 hardware.bin: hardware.asc
-	icetime -d hx8k -c 12 -mtr hardware.rpt hardware.asc
+	icetime -d lp8k -c 16 -mtr hardware.rpt hardware.asc
 	icepack hardware.asc hardware.bin
 
 # Use a grouped target to generate both of these files
