@@ -29,6 +29,11 @@ export GIT_COMMITTER_NAME="Sam Stelfox"
 export GIT_AUTHOR_EMAIL=$GIT_COMMITTER_EMAIL
 export GIT_AUTHOR_NAME=$GIT_COMMITTER_NAME
 
+export HISTCONTROL="ignoreboth"
+export HISTIGNORE="ls:bg:fg:history"
+export HISTSIZE=-1
+export HISTTIMEFORMAT="%F %T "
+
 # Update the path for the python tools we'll be installing
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:~/.local/bin"
 
@@ -36,7 +41,8 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:~/.local/bin
 # to something that won't get in the way
 export PS1="\W \$ "
 
-# Use neovim as just our normal vim
+alias gl='git log --graph --pretty=format:"%Cred%h%Creset - %G? %C(yellow)%d%Creset%s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=rfc'
+alias gs='git status'
 alias vim='nvim'
 EOF
 
@@ -167,6 +173,7 @@ tinyprog --update-bootloader
 mkdir -p ~/workspace/electronics/fpga-playground
 cd workspace/electronics/fpga-playground
 git init
+git commit -m "initial project creation" --allow-empty
 ```
 
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
