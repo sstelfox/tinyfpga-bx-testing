@@ -1,0 +1,9 @@
+# https://github.com/YosysHQ/nextpnr/blob/master/docs/ice40.md
+# https://github.com/YosysHQ/nextpnr/blob/master/docs/constraints.md
+
+#set_io [-nowarn] [-pullup yes|no] [-pullup_resistor 3P3K|6P8K|10K|100K] port pin
+#set_frequency net frequency
+
+set_io clk_16mhz B2
+set_io user_led B3
+set_io usb_pullup A3

@@ -3,7 +3,7 @@ BOARD_PIN_DEFS = cfg/tinyfpga_bx
 TARGET_MHZ = 16
 
 out/hardware.bin: tmp/hardware.asc
-	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.asc out/hardware.bin
+	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.rpt tmp/hardware.asc
 	icepack tmp/hardware.asc out/hardware.bin
 
 tmp/hardware.asc: $(BOARD_PIN_DEFS).pcf $(BOARD_PIN_DEFS)_addl_clks.py tmp/hardware.json
