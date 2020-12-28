@@ -34,4 +34,16 @@ Additional packages I'll likely be pulling in for testing:
 * gtkwave
 * iverilog
 
+I also have the following udev rules in `/etc/udev/rules.d/80-fpga-serial.rules`
+setup to allow my user access to prevent the crappy ModemManager from trying to
+steal my device when I plug it in.
+
+```
+# Disable ModemManager for TinyFPGA BX
+ATTRS{idVendor}=="1d50", ATTRS{idProduct}=="6130", ENV{ID_MM_DEVICE_IGNORE}="1"
+```
+
+You may need to add yourself to the `dialout` group to get access to the serial
+devices by default.
+
 [1]: https://github.com/lawrie/tinyfpga_examples
