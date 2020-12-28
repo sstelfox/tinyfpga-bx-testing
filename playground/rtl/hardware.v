@@ -1,5 +1,6 @@
 module hardware (
   input clk_16mhz,
+
   output user_led,
   output usb_pullup
 );

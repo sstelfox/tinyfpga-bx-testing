@@ -39,7 +39,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:~/.local/bin
 
 # Since this isn't sourcing any system default bashrc, we need to set our prompt
 # to something that won't get in the way
-export PS1="\W \$ "
+export PS1="\w \$ "
 
 alias gl='git log --graph --pretty=format:"%Cred%h%Creset - %G? %C(yellow)%d%Creset%s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit --date=rfc'
 alias gs='git status'
@@ -169,6 +169,13 @@ tinyprog --update-bootloader
 
 ### Project Initialization
 
+The following commands setup a basic project directory with some working
+minimal code. I would leave the project truly empty a "no-op" config, but it
+seems yosys doesn't recognize empty modules as existing, and it produces
+warnings without any clocks. To initialize the project in a way that can work
+from the get go, a minimal pin configuration and the blink example were brought
+in.
+
 ```
 mkdir -p ~/workspace/electronics/fpga-playground/{cfg,rtl,src}
 cd workspace/electronics/fpga-playground
@@ -179,13 +186,15 @@ BOARD_PIN_DEFS = cfg/tinyfpga_bx
 TARGET_MHZ = 16
 
 out/hardware.bin: tmp/hardware.asc
-	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.asc out/hardware.bin
+	mkdir -p out/
+	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.rpt tmp/hardware.asc
 	icepack tmp/hardware.asc out/hardware.bin
 
 tmp/hardware.asc: $(BOARD_PIN_DEFS).pcf $(BOARD_PIN_DEFS)_addl_clks.py tmp/hardware.json
 	nextpnr-ice40 --lp8k --package cm81 --pcf $(BOARD_PIN_DEFS).pcf --pre-pack $(BOARD_PIN_DEFS)_addl_clks.py --json tmp/hardware.json --asc tmp/hardware.asc
 
 tmp/hardware.blif tmp/hardware.json &: rtl/hardware.v
+	mkdir -p tmp/
 	yosys -Q -q -l tmp/hardware.log -p 'synth_ice40 -top hardware -blif tmp/hardware.blif -json tmp/hardware.json' $^
 
 build: out/hardware.bin
@@ -200,10 +209,49 @@ upload: out/hardware.bin
 .PHONY: build clean upload
 EOF
 
-touch cfg/tinyfpga_bx{.pcf,_addl_clks.py}
+cat << 'EOF' > cfg/tinyfpga_bx.pcf
+# https://github.com/YosysHQ/nextpnr/blob/master/docs/constraints.md
+# https://github.com/YosysHQ/nextpnr/blob/master/docs/ice40.md
+
+#set_io [-nowarn] [-pullup yes|no] [-pullup_resistor 3P3K|6P8K|10K|100K] port pin
+#set_frequency net frequency
+
+set_io clk_16mhz B2
+set_io user_led B3
+set_io usb_pullup A3
+EOF
+
+cat << 'EOF' > cfg/tinyfpga_bx_addl_clks.py
+#ctx.addClock("csi_rx_i.dphy_clk", 96)
+#ctx.addClock("video_clk", 24)
+#ctx.addClock("uart_i.sys_clk_i", 12)
+EOF
 
 cat << 'EOF' > rtl/hardware.v
-module hardware;
+module hardware (
+  input clk_16mhz,
+
+  output user_led,
+  output usb_pullup
+);
+  // Drive the USB pull-up resistor low to disable USB
+  assign usb_pullup = 0;
+
+  // Incrementing clock to slow down our selection of the bit pattern being
+  // output to the LED
+  reg [25:0] blink_counter = 0;
+
+  // Pattern that will be displayed on the LED over time
+  wire [31:0] blink_pattern = 32'b101011110000101011110000101011110000;
+
+  // Update our clock counter every clock cycle
+  always @(posedge clk_16mhz) begin
+    blink_counter <= blink_counter + 1;
+  end
+
+  // Use the high order bits of our blink counter to select the position in
+  // our blink pattern we should be outputting
+  assign user_led = blink_pattern[blink_counter[25:21]];
 endmodule
 EOF
 
