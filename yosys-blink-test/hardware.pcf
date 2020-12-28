@@ -6,10 +6,10 @@
 #
 # Copyright (c) 2018, Luke Valenty
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
 #    list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -29,7 +29,7 @@
 #
 # The views and conclusions contained in the software and documentation are those
 # of the authors and should not be interpreted as representing official policies,
-# either expressed or implied, of the <project name> project. 
+# either expressed or implied, of the <project name> project.
 #
 ###############################################################################
 
@@ -66,12 +66,12 @@
 #set_io --warn-no-port pin_24 A6
 
 ## SPI flash interface on bottom of board
-#set_io flash_csb F7
-#set_io flash_clk G7
-#set_io flash_io0 G6
-#set_io flash_io1 H7
-#set_io flash_io2 H4
-#set_io flash_io3 J8
+#set_io --warn-no-port flash_csb F7
+#set_io --warn-no-port flash_clk G7
+#set_io --warn-no-port flash_io0 G6
+#set_io --warn-no-port flash_io1 H7
+#set_io --warn-no-port flash_io2 H4
+#set_io --warn-no-port flash_io3 J8
 
 ## General purpose pins on bottom of board
 #set_io --warn-no-port pin_25 G1
@@ -86,9 +86,9 @@
 set_io --warn-no-port user_led B3
 
 ## USB
-set_io pin_usb_pu A3
-#set_io pin_usbp B4
-#set_io pin_usbn A4
+set_io --warn-no-port pin_usb_pu A3
+#set_io --warn-no-port pin_usbp B4
+#set_io --warn-no-port pin_usbn A4
 
 ## 16MHz clock
-set_io clk_16mhz B2
+set_io --warn-no-port clk_16mhz B2
