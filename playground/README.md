@@ -332,12 +332,6 @@ keep close at hand. This will very likely evolve over time.
 * Logical groups of modules should be kept in subdirectories (for example
   components of an ALU)
 
-[1]: https://github.com/tinyfpga/TinyFPGA-BX
-[2]: https://tinyfpga.com/
-[3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
-[4]: https://www.mouser.com/datasheet/2/225/FPGA-DS-02029-3-5-iCE40-LP-HX-Family-Data-Sheet-1022803.pdf
-[5]: https://github.com/tinyfpga/TinyFPGA-BX
-
 ## Verilog HDL Notes
 
 Operators:
@@ -349,10 +343,16 @@ Operators:
 * `|` bitwise OR
 * `||` logical OR
 * `^` bitwise XOR
-* `~` bitwise NOT (invert a bit pattern, ~1010 = 0101)
+* `~` bitwise NOT (invert a bit pattern, ~1010 == 0101)
 * `!` logical NOT (non zero values true or 1, only zero value is false or 0)
 * `==` equality
 * `>` greater than
 * `<` less than
 * `{}` concatenation
-* `?:` conditional
+* `?:` conditional (this is a ternary operator like output = condition ? truthy statement : falsey statement)
+
+[1]: https://github.com/tinyfpga/TinyFPGA-BX
+[2]: https://tinyfpga.com/
+[3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
+[4]: https://www.mouser.com/datasheet/2/225/FPGA-DS-02029-3-5-iCE40-LP-HX-Family-Data-Sheet-1022803.pdf
+[5]: https://github.com/tinyfpga/TinyFPGA-BX
