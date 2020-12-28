@@ -175,18 +175,18 @@ cd workspace/electronics/fpga-playground
 
 cat << 'EOF' > Makefile
 # Note: If the FPGA family, or the package changes then the build commands will have to be updated.
-BOARD_PIN_DEFS = cfg/tinyfpga_bx_pins.pcf
+BOARD_PIN_DEFS = cfg/tinyfpga_bx
 TARGET_MHZ = 16
 
 out/hardware.bin: tmp/hardware.asc
 	icetime -d lp8k -c $(TARGET_MHZ) -m -t -r tmp/hardware.asc out/hardware.bin
 	icepack tmp/hardware.asc out/hardware.bin
 
-tmp/hardware.asc: cfg/tinyfpga_bx_pins.pcf tmp/hardware.json
-	nextpnr-ice40 --lp8k --package cm81 --pcf $(BOARD_PIN_DEFS) --json tmp/hardware.json --asc tmp/hardware.asc
+tmp/hardware.asc: $(BOARD_PIN_DEFS).pcf $(BOARD_PIN_DEFS)_addl_clks.py tmp/hardware.json
+	nextpnr-ice40 --lp8k --package cm81 --pcf $(BOARD_PIN_DEFS).pcf --pre-pack $(BOARD_PIN_DEFS)_addl_clks.py --json tmp/hardware.json --asc tmp/hardware.asc
 
 tmp/hardware.blif tmp/hardware.json &: rtl/hardware.v
-	yosys -Q -q -l tmp/hardware.log -p 'synth_ice40 -top rtl/hardware.v -blif tmp/hardware.blif -json tmp/hardware.json' $^
+	yosys -Q -q -l tmp/hardware.log -p 'synth_ice40 -top hardware -blif tmp/hardware.blif -json tmp/hardware.json' $^
 
 build: out/hardware.bin
 
@@ -200,7 +200,12 @@ upload: out/hardware.bin
 .PHONY: build clean upload
 EOF
 
-touch rtl/hardware.v
+touch cfg/tinyfpga_bx{.pcf,_addl_clks.py}
+
+cat << 'EOF' > rtl/hardware.v
+module hardware;
+endmodule
+EOF
 
 git init
 git add -A
@@ -213,6 +218,8 @@ target differs you'll have to adjust the build commands to match. How the
 package is physically connected on the board is going to define our pin
 mapping. Luckily our board has all the hardware specific information
 [available][5].
+
+You'll need KiCad installed to inspect the board and acquire the required information 
 
 ## Project Style Guidelines
 
