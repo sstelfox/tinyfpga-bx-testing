@@ -11,4 +11,27 @@ to low, the other one is setting it high as well as bringing both the positive
 and negative USB pins to low... I'll probably have to review the schematic to
 see which is actually the correct behavior.
 
+This project is pretty simple, but I'm trying to learn "the correct" way to
+handle these projects including testing, simulation, and organization all of
+which are missing from this project right now. There is a lot to learn but I'll
+be expanding this project as I learn.
+
+I covered this in the README I wrote for the updated-picosoc project (which was
+largely a cleanup process, and switching PnR tools), but I'm using Fedora 32 as
+my development environment. I already had tinyprog installed and available
+(only required if you want to program a TinyFPGA BX with this project), which
+likely just came from `pip install` as it isn't available in the package repo,
+other than that the following packages are required to build and run this
+project:
+
+* icestorm
+* make
+* nextpnr
+* yosys
+
+Additional packages I'll likely be pulling in for testing:
+
+* gtkwave
+* iverilog
+
 [1]: https://github.com/lawrie/tinyfpga_examples
