@@ -84,7 +84,7 @@ bind-key l select-pane -R
 EOF
 
 cat << 'EOF' > ~/.vimrc
-set expandtab shiftwidth=2 tabstop=2
+set expandtab shiftwidth=2 tabstop=2 textwidth=120
 set list listchars=tab:>-,trail:-
 set noswapfile
 set number
@@ -170,11 +170,53 @@ tinyprog --update-bootloader
 ### Project Initialization
 
 ```
-mkdir -p ~/workspace/electronics/fpga-playground
+mkdir -p ~/workspace/electronics/fpga-playground/{rtl,src}
 cd workspace/electronics/fpga-playground
+
+cat << 'EOF' > Makefile
+EOF
+
 git init
-git commit -m "initial project creation" --allow-empty
+git add -A
+git commit -m "initial project creation"
 ```
+
+Before we do much design we need to understand what we're building for.
+
+## Project Style Guidelines
+
+I tried to find a good style guideline for a Verilog project and couldn't find
+anything about the structure, just coding [guidelines][3]. It's probably highly
+subjective to different environments but these are highlights that I want to
+keep close at hand. This will very likely evolve over time.
+
+* 2 space indentation (not tabs)
+* Use the suffixes `_in`, `_out`, and `_reg` for module signals representings
+  inputs, outputs, and registers respectively.
+* At most one module per file
+* One Verilog statement per line
+* One port declaration per line
+* Preserve port order as defined between the port declarations and definitions
+  in modules
+* Line length not to exceed 120 characters
+* Modules, tasks, and functions must not modify nets or variables not passed as
+  ports into the module.
+* Partition separate clock domains into separate modules. The synchronization
+  logic should be part of the receiving clock domain.
+* Asynchronous logic should be partitioned from synchronous logic.
+* Combinational feedback loops must not be used.
+* Avoid ports of type `inout`
+* Verilog files will live in the `rtl` directory in the root of the project
+* Source code belonging to firmware, or additional user data that will live on
+  top of the verilog design belong in the `src` directory in the root of the
+  project
+* All build artifacts should be ignored from the git directory
+* The project `Makefile` should define `build`, `clean`, and `program` phony
+  targets. The `build` target should be the default and build both the verilog
+  design and any required firmware, the `clean` target should remove all build
+  artifacts, and the `program` target should handle uploading the currently
+  built design to the attached hardware.
 
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
 [2]: https://tinyfpga.com/
+[3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
