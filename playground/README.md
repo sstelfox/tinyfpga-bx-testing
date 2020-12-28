@@ -83,7 +83,9 @@ bind-key h select-pane -L
 bind-key l select-pane -R
 EOF
 
-cat << 'EOF' > ~/.vimrc
+# This is definitely not expected... Man this project is managed poorly...
+mkdir -p ~/.config/nvim
+cat << 'EOF' > ~/.config/nvim/init.vim
 set expandtab shiftwidth=2 tabstop=2 textwidth=120
 set list listchars=tab:>-,trail:-
 set noswapfile
