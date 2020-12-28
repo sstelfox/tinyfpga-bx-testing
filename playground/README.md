@@ -219,7 +219,28 @@ package is physically connected on the board is going to define our pin
 mapping. Luckily our board has all the hardware specific information
 [available][5].
 
-You'll need KiCad installed to inspect the board and acquire the required information 
+The project has handy images in the root directory that have pin mappings of
+all the exposed pins with what pads they are connected to and in some cases
+hints at what the pins intended use are (such as the SPI pins). It is missing
+at the very least the clock pin on the rendered images.
+
+Things you'll want to find in the schematic:
+
+* Which pins are used on the FPGA package
+* Which FPGA pins are connected to what peripherals
+* Which FPGA pins have general pads exposed for GPIO (can be used for additional
+  peripherals or as debug pins)
+* Which pins are connected to external clocks (and what is their frequency)
+
+I haven't designed a FPGA board from scratch, but there is some additional
+things being taken care of for us with this board. Specifically it has been
+setup already to pull a bootloader bitstream automatically (I assume from the
+onboard flash) that allows us to program a bitstream and firmware (referred to
+as user data) using a easy USB serial interface.
+
+If I had to do a fresh design I would probably need to figure out how to
+configure where the FPGA finds its initial bitstream, how that is stored, and
+how to program the raw device.
 
 ## Project Style Guidelines
 
