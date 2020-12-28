@@ -351,6 +351,11 @@ Operators:
 * `{}` concatenation
 * `?:` conditional (this is a ternary operator like output = condition ? truthy statement : falsey statement)
 
+The opensource version of Yosys doesn't support all of the features of
+SystemVerilog, officially it only supports Verilog 2005 but there are some very
+useful features that are available, namely typedefs and enums both of which can
+help reduce errors during development and provide more clarity when reading.
+
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
 [2]: https://tinyfpga.com/
 [3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
