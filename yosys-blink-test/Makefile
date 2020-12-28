@@ -13,7 +13,7 @@ hardware.blif hardware.json &: hardware.v
 build: hardware.bin
 
 clean:
-	rm -f firmware.{bin,elf,hex,map,o}
+	rm -f hardware.{asc,bin,blif,json,log,rpt}
 
 upload: hardware.bin
 	tinyprog -p hardware.bin
