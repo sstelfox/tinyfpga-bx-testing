@@ -29,6 +29,9 @@ export GIT_COMMITTER_NAME="Sam Stelfox"
 export GIT_AUTHOR_EMAIL=$GIT_COMMITTER_EMAIL
 export GIT_AUTHOR_NAME=$GIT_COMMITTER_NAME
 
+# Update the path for the python tools we'll be installing
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:~/.local/bin"
+
 # Since this isn't sourcing any system default bashrc, we need to set our prompt
 # to something that won't get in the way
 export PS1="\W \$ "
@@ -118,6 +121,40 @@ When you plug in the TinyFPGA BX you should see the following show up in `dmesg`
 [ 3970.059379] cdc_acm 1-4:1.0: ttyACM0: USB ACM device
 ```
 
+I'm going to be using a fully open source toolkit for my FPGA development since
+target FPGA (Lattice iCE40LP8K on a [TinyFPGA-BX][1] board, available for sale
+through the projects [website][2]) can use open source tolling. You can do
+almost everything except see your code working in person without actually
+having the hardware though.
+
+```
+sudo dnf install icestorm make nextpnr yosys -y
+pip install tinyprog --user
+```
+
+At this point you should be able to test that the system can see my board:
+
+```
+$ tinyprog -l
+
+    TinyProg CLI
+    ------------
+    Using device id 1d50:6130
+    Only one board with active bootloader, using it.
+    Boards with active bootloaders:
+
+        /dev/ttyACM0: TinyFPGA BX 1.0.0
+            UUID: e99a03e7-632e-4393-ab1f-0e2106f8afdb
+            FPGA: ice40lp8k-cm81
+
+```
+
+Make sure the bootloader is up to date:
+
+```
+tinyprog --update-bootloader
+```
+
 ### Project Initialization
 
 ```
@@ -125,3 +162,6 @@ mkdir -p ~/workspace/electronics/fpga-playground
 cd workspace/electronics/fpga-playground
 git init
 ```
+
+[1]: https://github.com/tinyfpga/TinyFPGA-BX
+[2]: https://tinyfpga.com/
