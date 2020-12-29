@@ -356,8 +356,13 @@ SystemVerilog, officially it only supports Verilog 2005 but there are some very
 useful features that are available, namely typedefs and enums both of which can
 help reduce errors during development and provide more clarity when reading.
 
+## Reference Documentation and Projects
+
+* [Project IceStorm Documentation][6]
+
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
 [2]: https://tinyfpga.com/
 [3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
 [4]: https://www.mouser.com/datasheet/2/225/FPGA-DS-02029-3-5-iCE40-LP-HX-Family-Data-Sheet-1022803.pdf
 [5]: https://github.com/tinyfpga/TinyFPGA-BX
+[6]: http://www.clifford.at/icestorm/
