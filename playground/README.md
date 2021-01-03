@@ -360,6 +360,50 @@ help reduce errors during development and provide more clarity when reading.
 
 * [Project IceStorm Documentation][6]
 
+### CPUs & SoCs
+
+* [Basic-SIMD-Processor-Verilog-Tutorial](https://github.com/zslwyuan/Basic-SIMD-Processor-Verilog-Tutorial)
+* [BiRiscV](https://opencores.org/projects/biriscv) and [github repo](https://github.com/ultraembedded/biriscv)
+* [darkriscv](https://github.com/darklife/darkriscv)
+* [List of RiscV FPGA Cores & SoCs](https://github.com/riscv/riscv-cores-list)
+* [Nyuzi Processor](https://github.com/jbush001/NyuziProcessor) and associated [video description](https://www.youtube.com/watch?v=ZP8rmAZUIa4)
+* [picorv32](https://github.com/cliffordwolf/picorv32)
+* [riscv-simple-sv](https://github.com/tilk/riscv-simple-sv)
+* [TinyFPGA-SoC](https://github.com/tinyfpga/TinyFPGA-SoC)
+* [tinyzip](https://github.com/ZipCPU/tinyzip)
+* [ZipCPU](https://github.com/ZipCPU/zipcpu)
+
+### Logic Analyzers
+
+* [A Modular Logic Analyzer for FPGAs](https://hackaday.com/2019/05/26/a-modular-logic-analyzer-for-fpgas/)
+* [OpenLogic Micro (Logic Analyzer)](https://github.com/kuym/OpenLogicMicro)
+* [Verifla (Logic Analyzer)](https://github.com/wd5gnr/verifla) and associated [blog post](https://hackaday.com/2018/10/12/logic-analyzers-for-fpgas-a-verilog-odyssey/).
+
+### Misc
+
+* [Building a very simple wishbone interconnect](https://zipcpu.com/blog/2017/06/22/simple-wb-interconnect.html)
+* [Interrupt Controller](https://github.com/adibis/Interrupt_Controller)
+* [Open FPGA Verilog Tutorial](https://github.com/Obijuan/open-fpga-verilog-tutorial) and [English Wiki](https://github.com/Obijuan/open-fpga-verilog-tutorial/wiki/Home_EN)
+* [Random instruction generator for RISC-V processor verification](https://github.com/google/riscv-dv)
+* [Taking a look at the TinyFPGA BX](https://zipcpu.com/blog/2018/10/05/tinyfpga.html)
+* [TinyFPGA-Bootloader](https://github.com/tinyfpga/TinyFPGA-Bootloader)
+* [TinyFPGA B-Series User Guide](https://tinyfpga.com/b-series-guide.html)
+* [TinyFPGA-BX](https://github.com/tinyfpga/TinyFPGA-BX)
+* [tinyfpga-bx-testing](https://github.com/sstelfox/tinyfpga-bx-testing/tree/main/updated-picosoc)
+* [tinyfpga_bx_usbserial](https://github.com/nalzok/tinyfpga_bx_usbserial)
+* [tinyfpga_examples](https://github.com/lawrie/tinyfpga_examples)
+* [tiny-synth](https://github.com/gundy/tiny-synth)
+* [toygpu](https://github.com/matt-kimball/toygpu)
+* [understanding-tinyfpga-bootloader](https://github.com/mattvenn/understanding-tinyfpga-bootloader)
+* [Verilog-Adders](https://github.com/mongrelgem/Verilog-Adders)
+* [verilog-ethernet](https://github.com/alexforencich/verilog-ethernet)
+* [ZipCPU Debug Bus Interfaces](https://github.com/ZipCPU/dbgbus)
+
+### Software / Firmware / Operating Systems
+
+* [xv6 for nyuzi processor](https://github.com/jbush001/xv6-nyuzi)
+* [xv6 project documentation](https://pdos.csail.mit.edu/6.828/2016/xv6.html)
+
 [1]: https://github.com/tinyfpga/TinyFPGA-BX
 [2]: https://tinyfpga.com/
 [3]: https://people.ece.cornell.edu/land/courses/ece5760/Verilog/FreescaleVerilog.pdf
