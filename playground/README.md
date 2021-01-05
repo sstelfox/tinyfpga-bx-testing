@@ -356,6 +356,537 @@ SystemVerilog, officially it only supports Verilog 2005 but there are some very
 useful features that are available, namely typedefs and enums both of which can
 help reduce errors during development and provide more clarity when reading.
 
+### Cheat Sheet
+
+#### Wires
+
+```
+wire input a,b;
+wire output y;
+wire input a2[1:0],b2[1:0];
+wire output y2[1:0];
+wire output y3[2:0];
+```
+
+#### Assignment
+
+An assign statement is used for modeling only combinational logic and it is
+executed continuously. So the assign statement is called 'continuous assignment
+statement' as there is no sensitive list (see always blocks later).
+
+```
+assign y = a;
+```
+
+#### Logic Bitwise Primitives
+
+*Negation:*
+
+```
+assign y = ~a;
+```
+
+*AND Gate:*
+
+```
+assign y = a & b;
+```
+
+*OR Gate:*
+
+```
+assign y = a | b;
+```
+
+*Exclusive OR Gate:*
+
+```
+assign y = a ^ b;
+```
+
+*Reduction:*
+
+```
+assign y = | a2;
+```
+
+Is equivalent to:
+
+```
+assign y = a2[1] | a2[0];
+```
+
+*Concatenation and Replication:*
+
+```
+assign y2 = {a, b};
+assign y2 = {a, 1'b0};
+assign y3 = {a, b, 1'b1};
+assign y3 = {a, 2'b10};
+assign y3 = {a, a2};
+assign y3 = {a, a2[0], 1'b1};
+assign {y2, y} = {y3[1:0], a};
+assign y3 = {a, 2{1'b1}};
+```
+
+*Shifting:*
+
+```
+// a         a >> 2    a >>> 2   a << 2    a << 3
+// 01001111  00010011  00010011  00111100  01111000
+// 11001111  00110011  11110011  00111100  01111000
+assign y2 = a2 >> 1; // Logical 0's shifted in
+assign y2 = a2 >>> 1; // Arithemtic MSB sign bit shifted in
+assign y2 = a2 << 1; // Logical shift left same result as
+assign y2 = a2 <<< 1; // Arithmetic shift left
+```
+
+*Rotate right 1 bit:*
+
+```
+assign y3r = {y3[0], y3[2:1]};
+```
+
+*Rotate right 2 bit:*
+
+```
+assign y3r = {y3[1:0], y3[2]};
+```
+
+*Operator precedence:*
+
+```
+!,~,+,-(uni),**,*,/,%,+,-(bin),>>,<<,>>>,<<<,==,!=,===,!==,&,^,|,&&,||,?: */
+```
+
+*Tertiary Conditional Assignment:*
+
+```
+assign max = (a > b) ? a : b;
+```
+
+*If/Else:*
+
+```
+if(a < b) begin
+    assign min = a;
+end else begin
+    assign min = b;
+end
+
+if (boolean) begin
+    // if code
+end else if (boolean) begin
+    // if else 1 code
+end else begin
+    // else code
+end
+
+if (boolean) begin
+    // if code
+end else begin
+    // else code
+end
+```
+
+*Synthesis of Z and X Values:*
+
+Z values can only be synthesized by tristate buffers and thus infer them these
+have output enable inputs to control their output state for example here is a
+single bit tristate buffer with an output enable
+
+```
+assign y = (oen) ? a : 1'bz;
+```
+
+This sort of construct is useful for bidirectional ports or buses.
+
+The synthesis of X is don't care, the value may be either 0 or 1, this can
+improve the efficiency or optimization of combinational circuits
+
+```
+assign y = (a == 2'b00) ? 1'b0:
+               (a == 2'b01) ? 1'b1:
+                   (a == 2'b10) ? 1'b1:
+                       1'bx; // i == 2'b11
+```
+
+*Behavioral Blocks:*
+
+Procedural blocks using always block, these black box sections describe
+behavior using procedural statements, always behavioral blocks are defined with
+an event control expression or sensitivity list:
+
+```
+always @(sensitivity list) begin [Optional label]
+    [optional local variable declarations];
+
+    [procedural statements];
+end [optional label]
+```
+
+*Procedual Assignment:*
+
+```
+[variable] = [expression];  // blocking, assigned before next statement like normal C
+[variable] <= [expression]; // non blocking, assigned at end of always block
+```
+
+Blocking tends to be used for combinational circuits, non-blocking for
+sequential
+
+In a procedural assignment, an expression can only be assigned to an output
+with one of the variable data types, which are reg, integer, real, time, and
+real time. The reg data type is like the wire data type but used with a
+procedural output. The integer data type represents a fixed-size (usually 32
+bits) signed number in 2's-complement format. Since its size is fixed, we
+usually don't use it in synthesis. The other data types are for modeling and
+simulation and cannot be synthesized.
+
+*Registers:*
+
+A register is simple memory wire to hold state, normally implemented as D-Types
+
+```
+output reg
+```
+
+*Conditional Examples:*
+
+Binary encoder truth table:
+
+```
+en      a1      a2      y
+0       -       -       0000
+1       0       0       0001
+1       0       1       0010
+1       1       0       0100
+1       1       1       1000
+```
+
+```
+module pri_encoder (
+    input wire [3:0] r,
+    output wire en
+    output wire [1:0] y
+);
+
+    always @* begin
+        if (r[3]) begin
+            {en, y} = 3'b111;
+        end else if (r[2]) begin
+            {en, y} = 3'b110;
+        end else if (r[1]) begin
+            {en, y} = 3'b101;
+        end else if (r[0]) begin
+            {en, y} = 3'b100;
+        end else begin
+            {en, y} = 3'b000;
+        end
+    end
+endmodule
+
+module decoder_1 (
+    input wire [1:0] a,
+    input wire en,
+    output reg [3:0] y
+);
+
+    always @* begin
+        if (~en) begin
+            y = 4'b0000;
+        end else if (a == 2'b00) begin
+            y = 4'b0001;
+        end else if (a == 2'b01) begin
+            y = 4'b0010;
+        end else if (a == 2'b10) begin
+            y = 4'b0100;
+        end else begin
+            y = 4'b1000;
+        end
+    end
+endmodule
+```
+
+*Case:*
+
+```
+module decoder_2 (
+    input wire [1:0] a,
+    input wire en,
+    output reg [3:0] y
+)
+
+    always @* begin
+      case ({en, a})
+          3'b000, 3'b001,3'b010,3'b011: y = 4'b0000;
+          3'b100: y = 4'b0001;
+          3'b101: y = 4'b0010;
+          3'b110: y = 4'b0100;
+          3'b111: y = 4'b1000;
+      endcase // {en, a}
+    end
+endmodule
+
+module decoder_3 (
+    input wire [1:0] a,
+    input wire en,
+    output reg [3:0] y
+);
+
+    always @* begin
+        case ({en, a})
+            3'b100: y = 4'b0001;
+            3'b101: y = 4'b0010;
+            3'b110: y = 4'b0100;
+            3'b111: y = 4'b1000;
+            default: y = 4'b0000;
+        endcase // {en, a}
+    end
+endmodule
+```
+
+*Casex:*
+
+```
+module decoder_4 (
+    input wire [1:0] a,
+    input wire en,
+    output reg [3:0] y
+);
+
+    always @* begin
+        casex ({en, a})
+            3'b0xx: y = 4'b0000;
+            3'b100: y = 4'b0001;
+            3'b101: y = 4'b0010;
+            3'b110: y = 4'b0100;
+            3'b111: y = 4'b1000;
+        endcase // {en, a}
+    end
+endmodule
+```
+
+When the values in the item expressions are mutually exclusive (i.e., a value
+appears in only one item expression), the statement is known as a parallel case
+statement. When synthesized, a parallel case statement usually infers a
+multiplexing routing network and a non-parallel case statement usually infers a
+priority routing network. Unlike C where conditional constructs are executed
+serially using branches and jumps, with HDL these are realized by routing
+networks.
+
+*Casez:*
+
+```
+module decoder_4 (
+    input wire [1:0] a,
+    input wire en,
+    output reg [3:0] y
+);
+
+    always @* begin
+        casez ({en, a})
+            3'b0??: y = 4'b0000;
+            3'b100: y = 4'b0001;
+            3'b101: y = 4'b0010;
+            3'b110: y = 4'b0100;
+            3'b111: y = 4'b1000;
+        endcase // {en, a}
+    end
+endmodule
+```
+
+In `casez`, the `?` is used to indicate either `X` or `Z` state.
+
+
+*Tasks & Functions:*
+
+Tasks and Functions are used when a set of operations are commonly repeated and
+used, this save you writing the same thing out over and over a gain. Functions
+can only be used for modeling combinational logic cannot drive more than one
+output and cannot contain delays, unlike tasks which can. Tasks also can not
+return a value unlike functions which can.
+
+Below shows a function for calculating parity, something that may be used
+frequently in digital logic design.
+
+```
+function parity;
+    input [31:0] data;
+    integer i;
+
+    begin
+        parity = 0;
+        for (i= 0; i < 32; i = i + 1) begin
+            parity = parity ^ data[i];
+        end
+    end
+endfunction
+```
+
+*Common Errors:*
+
+* Variable assigned in multiple always blocks
+* Incomplete sensitivity list
+* Incomplete branch and incomplete output assignment
+
+Multiple assignment:
+
+```
+always @*
+    if (en) y = 1'b0;
+
+always @*
+    y = a & b;
+```
+
+`y` is the output of two circuits which could be contradictory, this an not be
+synthesized. Below is how this should have been written:
+
+```
+always @* begin
+    if (en) begin
+        y = 1'b0;
+    end else begin
+        y = a & b;
+    end
+end
+```
+
+Incomplete sensitivity list:
+
+Incomplete sensitivity list (missing `b`). `b` could change but the `y` output
+would not, causing unexpected behavior again this can not be synthesized.
+
+```
+always @(a) begin
+    y = a & b;
+end
+
+/* Fixed versions */
+always @(a, b) begin
+    y = a & b;
+end
+
+/* or simple cure all */
+always @* begin
+    y = a & b;
+end
+```
+
+Incomplete branch or output assignment:
+
+Incomplete branch or output assignment, do not infer state in combinational
+circuits.
+
+```
+always @* begin
+    if (a > b) begin
+        gt = 1'b1; // no eq assignment in branch
+    end else if (a == b) begin
+        eq = 1'b1; // no lt assignment in branch
+    // final else branch omiitted
+    end
+end
+```
+
+Here we break both incomplete output assinment rules and branch According to
+Verilog definition gt and eq keep their previous values when not assigned which
+implies internal state, unintended latches are inferred, these sort of issues
+cause endless hair pulling avoid such things. Here is how we could correct
+this:
+
+```
+always @* begin
+    if (a > b) begin
+        gt = 1'b1;
+        eq = 1'b0;
+    end else if (a == b) begin
+        gt = 1'b0;
+        eq = 1'b1;
+    end else begin
+        gt = 1'b0;
+        eq = 1'b0;
+    end
+end
+```
+
+Or easier still assign default values to variables at the beginning of the
+always block
+
+```
+always @* begin
+    gt = 1'b0;
+    eq = 1'b0;
+
+    if (a > b) begin
+        gt = 1'b1;
+    end else if (a == b) begin
+        eq = 1'b1;
+    end
+end
+```
+
+Similar errors can creep into case statements:
+
+```
+case (a)
+    2'b00: y =1'b1;
+    2'b10: y =1'b0;
+    2'b11: y =1'b1;
+endcase
+```
+
+Here the case `2'b01` is not handled, if `a` has this value `y` gets it's
+previous value and a latch is assumed, the solution is to include the missing
+case, assign `y` a value before the case or add a default clause.
+
+```
+case (a)
+    2'b00: y =1'b1;
+    2'b10: y =1'b0;
+    2'b11: y =1'b1;
+    default: y = 1'b1;
+endcase
+```
+
+*Adder with carry:*
+
+```
+module adder #(parameter N=4) (
+    input wire [N-1:0] a,b,
+    output wire [N-1:0] sum,
+    output wire cout
+);
+
+    /* Constant Declaration */
+    localparam N1 = N-1;
+
+    /* Signal Declaration */
+    wire [N:0] sum_ext;
+
+    /* module body */
+    assign sum_ext = {1'b0, a} + {1'b0, b};
+    assign sum = sum_ext[N1:0];
+    assign cout = sum_ext[N];
+endmodule
+
+module adder_example (
+    input wire [3:0] a4,b4,
+    output wire [3:0] sum4,
+    output wire c4
+);
+    // Instantiate a 4 bit adder
+    adder #(.N(4)) four_bit_adder (.a(a4), .b(b4), .sum(sum4), .cout(c4));
+endmodule
+```
+
+*Local Params:*
+
+```
+localparam N = 4
+```
+
 ## Reference Documentation and Projects
 
 * [Project IceStorm Documentation][6]
@@ -376,7 +907,6 @@ help reduce errors during development and provide more clarity when reading.
 ### Logic Analyzers
 
 * [A Modular Logic Analyzer for FPGAs](https://hackaday.com/2019/05/26/a-modular-logic-analyzer-for-fpgas/)
-* [OpenLogic Micro (Logic Analyzer)](https://github.com/kuym/OpenLogicMicro)
 * [Verifla (Logic Analyzer)](https://github.com/wd5gnr/verifla) and associated [blog post](https://hackaday.com/2018/10/12/logic-analyzers-for-fpgas-a-verilog-odyssey/).
 
 ### Misc
