@@ -900,6 +900,7 @@ localparam N = 4
 * [Nyuzi Processor](https://github.com/jbush001/NyuziProcessor) and associated [video description](https://www.youtube.com/watch?v=ZP8rmAZUIa4)
 * [picorv32](https://github.com/cliffordwolf/picorv32)
 * [riscv-simple-sv](https://github.com/tilk/riscv-simple-sv)
+* [RSD](https://github.com/rsd-devel/rsd) and [research paper](http://www.rsg.ci.i.u-tokyo.ac.jp/members/shioya/pdfs/Mashimo-FPT'19.pdf)
 * [TinyFPGA-SoC](https://github.com/tinyfpga/TinyFPGA-SoC)
 * [tinyzip](https://github.com/ZipCPU/tinyzip)
 * [ZipCPU](https://github.com/ZipCPU/zipcpu)
